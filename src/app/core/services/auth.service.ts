@@ -103,6 +103,24 @@ export class AuthService {
 
   // ─── Private Helpers ──────────────────────────────────────────────────────
 
+  updateCurrentUserFullName(newName: string) {
+    const cur = this.currentUser();
+    if (cur) {
+      const updated = { ...cur, fullName: newName };
+      localStorage.setItem(USER_KEY, JSON.stringify(updated));
+      this.currentUser.set(updated);
+    }
+  }
+
+  updateCurrentUserAvatar(avatarUrl: string) {
+    const cur = this.currentUser();
+    if (cur) {
+      const updated = { ...cur, profilePictureUrl: avatarUrl };
+      localStorage.setItem(USER_KEY, JSON.stringify(updated));
+      this.currentUser.set(updated);
+    }
+  }
+
   private handleAuthResponse(res: AuthResponse) {
     localStorage.setItem(TOKEN_KEY,         res.token);
     localStorage.setItem(REFRESH_KEY,       res.refreshToken);

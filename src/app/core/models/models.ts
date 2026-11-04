@@ -23,6 +23,7 @@ export interface AuthResponse {
   fullName: string;
   userType: UserType;
   isApproved: boolean;
+  profilePictureUrl?: string;
   token: string;           // Access token — 15 min lifetime
   refreshToken: string;    // Refresh token — 7 day lifetime
   tokenExpiresAt: string;  // ISO UTC string — schedule refresh before this
@@ -30,6 +31,51 @@ export interface AuthResponse {
 
 export interface RefreshTokenDto {
   refreshToken: string;
+}
+
+// ─── User Profile & Settings ──────────────────────────────────────────────────
+export interface UserProfile {
+  id: number;
+  email: string;
+  fullName: string;
+  phoneNumber?: string;
+  userType: UserType;
+  isApproved: boolean;
+  walletBalance: number;
+  profilePictureUrl?: string;
+  dateOfBirth?: string;
+  gender?: string;
+  nationality?: string;
+  passportNumber?: string;
+  passportExpiryDate?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  companyName?: string;
+  taxNumber?: string;
+  createdAt: string;
+}
+
+export interface UpdateProfileDto {
+  fullName: string;
+  phoneNumber?: string | null;
+  profilePictureUrl?: string | null;
+  dateOfBirth?: string | null;
+  gender?: string | null;
+  nationality?: string | null;
+  passportNumber?: string | null;
+  passportExpiryDate?: string | null;
+  address?: string | null;
+  city?: string | null;
+  country?: string | null;
+  companyName?: string | null;
+  taxNumber?: string | null;
+}
+
+export interface ChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }
 
 // ─── Flights ──────────────────────────────────────────────────────────────────

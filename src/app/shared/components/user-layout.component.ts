@@ -5,6 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { NotificationHubService } from '../../core/services/notification-hub.service';
 import { NotificationApiService } from '../../core/services/api.services';
 import { UserType } from '../../core/models/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-user-layout',
@@ -32,7 +33,16 @@ import { UserType } from '../../core/models/models';
           </span>
         }
       </a>
-      <span style="font-size:.875rem;font-weight:500;color:#374151">{{auth.currentUser()?.fullName}}</span>
+      <a routerLink="/profile" routerLinkActive="nav-active" style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:8px;text-decoration:none;color:#374151;font-weight:500;font-size:.875rem">
+        @if (auth.currentUser()?.profilePictureUrl) {
+          <img [src]="getAvatarUrl(auth.currentUser()?.profilePictureUrl)" alt="Avatar" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid #d1d5db">
+        } @else {
+          <div style="width:28px;height:28px;border-radius:50%;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700">
+            {{auth.currentUser()?.fullName?.[0]?.toUpperCase()}}
+          </div>
+        }
+        <span>{{auth.currentUser()?.fullName}}</span>
+      </a>
       @if (isB2B) { <span style="font-size:.7rem;background:#ede9fe;color:#6d28d9;padding:2px 8px;border-radius:999px;font-weight:600">B2B</span> }
       <button (click)="logout()" style="padding:8px 16px;background:#fee2e2;color:#dc2626;border:none;border-radius:8px;font-size:.875rem;font-weight:500;cursor:pointer">Logout</button>
     </div>
@@ -81,4 +91,11 @@ export class UserLayoutComponent implements OnInit {
 
   logout() { this.hub.disconnect(); this.auth.logout(); }
   getIcon(type: number) { return type===1?'✅':type===3?'⚠️':type===4?'❌':'ℹ️'; }
+
+  getAvatarUrl(url?: string): string {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const backendBase = environment.apiUrl.replace(/\/api\/?$/, '');
+    return `${backendBase}${url.startsWith('/') ? '' : '/'}${url}`;
+  }
 }

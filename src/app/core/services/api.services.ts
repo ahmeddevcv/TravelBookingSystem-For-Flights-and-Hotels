@@ -8,7 +8,8 @@ import {
   NotificationResponse, CreateNotificationDto,
   DashboardStats, UserManagement, CreateAdminDto,
   AuthResponse, AdminBookingsPage, AdminBookingDetail,
-  AdminBookingFilters, UpcomingFlight, AdminReports
+  AdminBookingFilters, UpcomingFlight, AdminReports,
+  UserProfile, UpdateProfileDto, ChangePasswordDto
 } from '../models/models';
 
 // ─── Flight Service ───────────────────────────────────────────────────────────
@@ -198,5 +199,30 @@ export class AdminService {
     if (from) p = p.set('from', from);
     if (to)   p = p.set('to', to);
     return this.http.get<AdminReports>(`${this.url}/reports`, { params: p });
+  }
+}
+
+// ─── User Profile & Settings Service ──────────────────────────────────────────
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  private url = `${environment.apiUrl}/user`;
+  constructor(private http: HttpClient) {}
+
+  getProfile() {
+    return this.http.get<UserProfile>(`${this.url}/profile`);
+  }
+
+  updateProfile(dto: UpdateProfileDto) {
+    return this.http.put<UserProfile>(`${this.url}/profile`, dto);
+  }
+
+  changePassword(dto: ChangePasswordDto) {
+    return this.http.post<{ message: string }>(`${this.url}/change-password`, dto);
+  }
+
+  uploadAvatar(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ profilePictureUrl: string }>(`${this.url}/upload-avatar`, formData);
   }
 }
